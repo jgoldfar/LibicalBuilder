@@ -15,10 +15,10 @@ sources = [
 # Bash recipe for building across all platforms
 script = raw"""
 cd $WORKSPACE/srcdir/libical-3.0/
-mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_TOOLCHAIN_FILE=/opt/$target/$target.toolchain -D ICAL_GLIB=OFF ..
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_TOOLCHAIN_FILE=/opt/$target/$target.toolchain -DICAL_GLIB=OFF -DWITH_CXX_BINDINGS=OFF ..
 make
 make install
-
 """
 
 # These are the platforms we will build for by default, unless further
