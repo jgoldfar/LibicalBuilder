@@ -1,0 +1,40 @@
+language: julia
+os:
+  - linux
+julia:
+  - 0.6
+notifications:
+  email: false
+git:
+  depth: 99999999
+cache:
+  timeout: 1000
+  directories:
+    - downloads
+env:
+  global:
+    - BINARYBUILDER_DOWNLOADS_CACHE=downloads
+    - BINARYBUILDER_AUTOMATIC_APPLE=false
+sudo: required
+
+# Before anything else, get the latest versions of things
+before_script:
+  - julia -e 'Pkg.clone("https://github.com/JuliaPackaging/BinaryProvider.jl")'
+  - julia -e 'Pkg.clone("https://github.com/JuliaPackaging/BinaryBuilder.jl"); Pkg.build()'
+
+script:
+  - julia build_tarballs.jl
+
+
+deploy:
+    provider: releases
+    api_key:
+        # Note; this api_key is only valid for jgoldfar/LibicalBuilder; you need
+        # to make your own: https://docs.travis-ci.com/user/deployment/releases/
+        secure: BYE3nKXRQxvt6sBqJOCJoFCSX+ThpAH0kYrQyerAYpVX1ulTK89sKSC+/ydkiJbny3jaeOSeIcOiNBJ8yUlBB7rBrFg/pGTWjMya9Dcortr3RvGZG3x797HZjZxYadA9J6W4D5mZLeY9vqOGrShSvdujT9WCKM60GyDRA4BMH6N8MzyIuwAp7iCt0TZt9Feom+oUeA7YwA6jdsG3nj7RRrP8nIk1FyFHG+/WzP1SBinOR8TKvUYqDOWvGy8Q+wYLSS9T1rIqOW5UMB6vOyzaF0iJsQHyDMdET6uH9BQp/vfQAXuzPyrldWQXwG3ij9VK/xQ8lrv+DqnR/A4louk8nZftOyTz4qOMutruyALvYAmLOeS++fU+NOjG8rYGjK5gjBIANSvQqAPW3+Pl6JG6HrKJ9Qrfdw6RNglUZUrZCjukcQKPePUZ1veIIZBupbi/O6mggpagGdKG3MZR67mZgp65po4rNB6M10mkm8SiSG/be3c6R/lFJ7FFl05HvzjAln7TQoWjDux48Bi+0F5sI8JCNBQmgyoIPQcAdj8DN123/DG+pUS6SFQhhe/cK2BdO7Ei3P846sM41oLMO7cZc2UCEcIL6UasxEf3wZuhmQ3TywILRlx6lHivdHvJArC9B0yT/uR6yua4SYr4l48eLAw5N6PnmlMjG5/YvY3l3Uc=
+    file_glob: true
+    file: products/*
+    skip_cleanup: true
+    on:
+        repo: jgoldfar/LibicalBuilder
+        tags: true
